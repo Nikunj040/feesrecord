@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Fees Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        padding: 30px;
+    }
+
+    .section {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e0e0e0;
+    }
+
+    .section h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        border-bottom: 3px solid #3498db;
+        padding-bottom: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: #3498db;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    }
+
+    .btn {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #27ae60, #219a52);
+        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .students-grid {
+        display: grid;
+        gap: 20px;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .student-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 15px;
+        padding: 20px;
+        border-left: 5px solid #3498db;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .student-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .student-card.pending {
+        border-left-color: #e74c3c;
+        background: linear-gradient(135deg, #fdf2f2, #fceaea);
+    }
+
+    .student-card.due-soon {
+        border-left-color: #f39c12;
+        background: linear-gradient(135deg, #fef9f3, #fdf4e8);
+    }
+
+    .student-header {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .student-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    .fee-status {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-paid {
+        background: #d5f4e6;
+        color: #27ae60;
+    }
+
+    .status-pending {
+        background: #fadbd8;
+        color: #e74c3c;
+    }
+
+    .status-due-soon {
+        background: #fdeaa7;
+        color: #f39c12;
+    }
+
+    .student-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #7f8c8d;
+    }
+
+    .detail-value {
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .student-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-small {
+        padding: 8px 15px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+
+    .notifications {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .notification {
+        background: white;
+        border-left: 5px solid #3498db;
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.5s ease;
+        max-width: 300px;
+    }
+
+    .notification.error {
+        border-left-color: #e74c3c;
+    }
+
+    .notification.success {
+        border-left-color: #27ae60;
+    }
+
+    .notification.warning {
+        border-left-color: #f39c12;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    .subjects-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+    }
+
+    .subject-tag {
+        background: #3498db;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .main-content {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+        }
+        
+        .student-details {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Student Fees Management System</h1>
+            <p>Dynamic fee tracking with automated reminders</p>
+        </div>
+
+
+    <div class="main-content">
+        <div class="section">
+            <h2>📝 Register New Student</h2>
+            <form id="studentForm">
+                <div class="form-group">
+                    <label for="studentName">Student Name</label>
+                    <input type="text" id="studentName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" id="phoneNumber" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subjects">Subjects (comma-separated)</label>
+                    <input type="text" id="subjects" placeholder="Math, Science, English" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="monthlyFee">Monthly Fee (₹)</label>
+                    <input type="number" id="monthlyFee" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dueDate">Fee Due Date (Day of month)</label>
+                    <select id="dueDate" required>
+                        <option value="">Select Day</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">Register Student</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>📊 System Overview</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingFees">0</div>
+                    <div class="stat-label">Pending Fees</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRevenue">₹0</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="reminderDays">Reminder Days Before Due Date</label>
+                <input type="number" id="reminderDays" value="3" min="1" max="15">
+            </div>
+            
+            <button onclick="checkReminders()" class="btn btn-success">Check Reminders Now</button>
+            <button onclick="exportData()" class="btn">Export Data</button>
+        </div>
+    </div>
+
+    <div class="section" style="grid-column: 1 / -1; margin: 0 30px 30px 30px;">
+        <h2>👥 Registered Students</h2>
+        <div class="students-grid" id="studentsGrid">
+            <!-- Students will be populated here -->
+        </div>
+    </div>
+</div>
+
+<div class="notifications" id="notifications"></div>
+
+<!-- Payment Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <h3>Record Payment</h3>
+        <div class="form-group">
+            <label for="paymentAmount">Amount Paid (₹)</label>
+            <input type="number" id="paymentAmount" min="1">
+        </div>
+        <div class="form-group">
+            <label for="paymentMonth">For Month</label>
+            <select id="paymentMonth">
+                <option value="">Select Month</option>
+            </select>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="recordPayment()" class="btn btn-success">Record Payment</button>
+            <button onclick="closeModal()" class="btn btn-danger">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Student data storage
+    let students = JSON.parse(localStorage.getItem('students')) || [];
+    let currentPaymentStudent = null;
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        populateDueDateOptions();
+        populateMonthOptions();
+        displayStudents();
+        updateStats();
+        
+        // Set up automatic reminder checking
+        setInterval(checkReminders, 24 * 60 * 60 * 1000); // Check daily
+        setTimeout(checkReminders, 5000); // Initial check after 5 seconds
+        
+        // Form submission
+        document.getElementById('studentForm').addEventListener('submit', registerStudent);
+    });
+
+    // Populate due date dropdown (1-31)
+    function populateDueDateOptions() {
+        const select = document.getElementById('dueDate');
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            select.appendChild(option);
+        }
+    }
+
+    // Populate month options
+    function populateMonthOptions() {
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const select = document.getElementById('paymentMonth');
+        const currentDate = new Date();
+        
+        // Add current and next few months
+        for (let i = 0; i < 6; i++) {
+            const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
+            const monthYear = `${months[date.getMonth()]} ${date.getFullYear()}`;
+            const option = document.createElement('option');
+            option.value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+            option.textContent = monthYear;
+            select.appendChild(option);
+        }
+    }
+
+    // Register new student
+    function registerStudent(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('studentName').value.trim();
+        const phone = document.getElementById('phoneNumber').value.trim();
+        const subjects = document.getElementById('subjects').value.split(',').map(s => s.trim()).filter(s => s);
+        const monthlyFee = parseInt(document.getElementById('monthlyFee').value);
+        const dueDate = parseInt(document.getElementById('dueDate').value);
+        
+        if (!name || !phone || subjects.length === 0 || !monthlyFee || !dueDate) {
+            showNotification('Please fill all fields correctly', 'error');
+            return;
+        }
+        
+        const student = {
+            id: Date.now().toString(),
+            name,
+            phone,
+            subjects,
+            monthlyFee,
+            dueDate,
+            registrationDate: new Date().toISOString(),
+            payments: {},
+            lastReminder: null
+        };
+        
+        students.push(student);
+        saveData();
+        
+        // Reset form
+        document.getElementById('studentForm').reset();
+        
+        displayStudents();
+        updateStats();
+        showNotification(`Student ${name} registered successfully!`, 'success');
+    }
+
+    // Display all students
+    function displayStudents() {
+        const grid = document.getElementById('studentsGrid');
+        
+        if (students.length === 0) {
+            grid.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                    <h3>No students registered yet</h3>
+                    <p>Register your first student to get started!</p>
+                </div>
+            `;
+            return;
+        }
+        
+        grid.innerHTML = students.map(student => {
+            const feeStatus = getFeeStatus(student);
+            const statusClass = feeStatus.status === 'paid' ? 'status-paid' : 
+                              feeStatus.status === 'pending' ? 'status-pending' : 'status-due-soon';
+            const cardClass = feeStatus.status === 'pending' ? 'pending' : 
+                             feeStatus.status === 'due-soon' ? 'due-soon' : '';
+            
+            return `
+                <div class="student-card ${cardClass}">
+                    <div class="student-header">
+                        <div class="student-name">${student.name}</div>
+                        <div class="fee-status ${statusClass}">${feeStatus.text}</div>
+                    </div>
+                    
+                    <div class="student-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">${student.phone}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Monthly Fee:</span>
+                            <span class="detail-value">₹${student.monthlyFee}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Due Date:</span>
+                            <span class="detail-value">${student.dueDate}${getOrdinalSuffix(student.dueDate)} of month</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Next Due:</span>
+                            <span class="detail-value">${feeStatus.nextDue}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="subjects-list">
+                        ${student.subjects.map(subject => `<span class="subject-tag">${subject}</span>`).join('')}
+                    </div>
+                    
+                    <div class="student-actions">
+                        <button onclick="openPaymentModal('${student.id}')" class="btn btn-success btn-small">Record Payment</button>
+                        <button onclick="sendReminder('${student.id}')" class="btn btn-small">Send Reminder</button>
+                        <button onclick="deleteStudent('${student.id}')" class="btn btn-danger btn-small">Delete</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Get fee status for a student
+    function getFeeStatus(student) {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+        const currentDay = currentDate.getDate();
+        
+        // Check if current month fee is paid
+        const monthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
+        const isPaid = student.payments[monthKey];
+        
+        // Calculate next due date
+        let nextDueDate = new Date(currentYear, currentMonth, student.dueDate);
+        if (currentDay > student.dueDate) {
+            nextDueDate = new Date(currentYear, currentMonth + 1, student.dueDate);
+        }
+        
+        const daysUntilDue = Math.ceil((nextDueDate - currentDate) / (1000 * 60 * 60 * 24));
+        const reminderDays = parseInt(document.getElementById('reminderDays').value) || 3;
+        
+        if (isPaid) {
+            return {
+                status: 'paid',
+                text: 'Paid',
+                nextDue: nextDueDate.toLocaleDateString(),
+                daysUntilDue
+            };
+        } else if (daysUntilDue < 0) {
+            return {
+                status: 'pending',
+                text: 'Overdue',
+                nextDue: nextDueDate.toLocaleDateString(),
+                daysUntilDue
+            };
+        } else if (daysUntilDue <= reminderDays) {
+            return {
+                status: 'due-soon',
+                text: `Due in ${daysUntilDue} days`,
+                nextDue: nextDueDate.toLocaleDateString(),
+                daysUntilDue
+            };
+        } else {
+            return {
+                status: 'ok',
+                text: `Due in ${daysUntilDue} days`,
+                nextDue: nextDueDate.toLocaleDateString(),
+                daysUntilDue
+            };
+        }
+    }
+
+    // Open payment modal
+    function openPaymentModal(studentId) {
+        const student = students.find(s => s.id === studentId);
+        if (!student) return;
+        
+        currentPaymentStudent = student;
+        document.getElementById('paymentAmount').value = student.monthlyFee;
+        document.getElementById('paymentModal').style.display = 'block';
+    }
+
+    // Close payment modal
+    function closeModal() {
+        document.getElementById('paymentModal').style.display = 'none';
+        currentPaymentStudent = null;
+    }
+
+    // Record payment
+    function recordPayment() {
+        if (!currentPaymentStudent) return;
+        
+        const amount = parseInt(document.getElementById('paymentAmount').value);
+        const month = document.getElementById('paymentMonth').value;
+        
+        if (!amount || !month) {
+            showNotification('Please fill all payment details', 'error');
+            return;
+        }
+        
+        // Record payment
+        currentPaymentStudent.payments[month] = {
+            amount,
+            date: new Date().toISOString(),
+            method: 'manual'
+        };
+        
+        saveData();
+        displayStudents();
+        updateStats();
+        closeModal();
+        
+        showNotification(`Payment of ₹${amount} recorded for ${currentPaymentStudent.name}`, 'success');
+    }
+
+    // Send reminder
+    function sendReminder(studentId) {
+        const student = students.find(s => s.id === studentId);
+        if (!student) return;
+        
+        const feeStatus = getFeeStatus(student);
+        let message = `Dear ${student.name}, `;
+        
+        if (feeStatus.status === 'pending') {
+            message += `your fee payment of ₹${student.monthlyFee} is overdue. Please make the payment at your earliest convenience.`;
+        } else {
+            message += `your monthly fee of ₹${student.monthlyFee} is due on ${feeStatus.nextDue}. Please ensure timely payment.`;
+        }
+        
+        // Simulate sending reminder (in real app, would integrate with SMS/email service)
+        student.lastReminder = new Date().toISOString();
+        saveData();
+        
+        showNotification(`Reminder sent to ${student.name} (${student.phone})`, 'success');
+        console.log(`SMS to ${student.phone}: ${message}`);
+    }
+
+    // Delete student
+    function deleteStudent(studentId) {
+        if (confirm('Are you sure you want to delete this student? This action cannot be undone.')) {
+            students = students.filter(s => s.id !== studentId);
+            saveData();
+            displayStudents();
+            updateStats();
+            showNotification('Student deleted successfully', 'success');
+        }
+    }
+
+    // Check for reminders
+    function checkReminders() {
+        const reminderDays = parseInt(document.getElementById('reminderDays').value) || 3;
+        let remindersCount = 0;
+        
+        students.forEach(student => {
+            const feeStatus = getFeeStatus(student);
+            const shouldRemind = feeStatus.status === 'pending' || 
+                               (feeStatus.status === 'due-soon' && feeStatus.daysUntilDue <= reminderDays);
+            
+            if (shouldRemind) {
+                const lastReminder = student.lastReminder ? new Date(student.lastReminder) : null;
+                const daysSinceLastReminder = lastReminder ? 
+                    Math.floor((new Date() - lastReminder) / (1000 * 60 * 60 * 24)) : Infinity;
+                
+                // Send reminder if no reminder sent today
+                if (daysSinceLastReminder >= 1) {
+                    sendReminder(student.id);
+                    remindersCount++;
+                }
+            }
+        });
+        
+        if (remindersCount === 0) {
+            showNotification('No reminders needed at this time', 'success');
+        } else {
+            showNotification(`${remindersCount} reminder(s) sent successfully`, 'warning');
+        }
+    }
+
+    // Update statistics
+    function updateStats() {
+        const totalStudents = students.length;
+        let pendingFees = 0;
+        let totalRevenue = 0;
+        
+        students.forEach(student => {
+            totalRevenue += student.monthlyFee;
+            const feeStatus = getFeeStatus(student);
+            if (feeStatus.status === 'pending' || feeStatus.status === 'due-soon') {
+                pendingFees++;
+            }
+        });
+        
+        document.getElementById('totalStudents').textContent = totalStudents;
+        document.getElementById('pendingFees').textContent = pendingFees;
+        document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <strong>${type.charAt(0).toUpperCase() + type.slice(1)}</strong><br>
+            ${message}
+        `;
+        
+        document.getElementById('notifications').appendChild(notification);
+        
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
+
+    // Export data
+    function exportData() {
+        const data = {
+            students,
+            exportDate: new Date().toISOString(),
+            totalStudents: students.length
+        };
+        
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `students_data_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showNotification('Data exported successfully', 'success');
+    }
+
+    // Save data to localStorage
+    function saveData() {
+        localStorage.setItem('students', JSON.stringify(students));
+    }
+
+    // Helper function to get ordinal suffix
+    function getOrdinalSuffix(day) {
+        if (day >= 11 && day <= 13) {
+            return 'th';
+        }
+        switch (day % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('paymentModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+</script>
+
+
+</body>
+</html>
